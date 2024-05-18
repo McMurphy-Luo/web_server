@@ -11,7 +11,10 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\WebServer.cpp" />
+    <ClInclude Include="include\web_server\web_server.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\web_server.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -19,6 +22,7 @@
     <ProjectGuid>{e7829d6d-d34e-4110-84d4-02ad523f6201}</ProjectGuid>
     <RootNamespace>WebServer</RootNamespace>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
+    <ProjectName>web_server</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">

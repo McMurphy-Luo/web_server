@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{384c0c7d-bfae-4ecf-87cb-779b3d0e2062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include">
+      <UniqueIdentifier>{a0164a4a-ebe9-4064-bb0d-ce19bf376f09}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="include\web_server">
+      <UniqueIdentifier>{edfa919e-dee9-46a9-a70e-d1d91a3395bd}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\web_server\web_server.h">
+      <Filter>include\web_server</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\web_server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+</Project>
