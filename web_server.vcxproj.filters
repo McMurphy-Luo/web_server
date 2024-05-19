@@ -15,9 +15,21 @@
     <ClInclude Include="include\web_server\web_server.h">
       <Filter>include\web_server</Filter>
     </ClInclude>
+    <ClInclude Include="src\http_server.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thread_io.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\web_server.cpp">
+    <ClCompile Include="src\main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http_server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thread_io.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
