@@ -1,24 +1,33 @@
-#include "thread_io.h"
+#include "thread_for_io.h"
 #include <sstream>
 #include "uv.h"
 #include "spdlog/spdlog.h"
 
-ThreadIO::ThreadIO() {
+ThreadForIO* ThreadForIO::CreateThread() {
+  return new ThreadForIO();
+}
+
+ThreadForIO::ThreadForIO() {
 
 }
 
-void ThreadIO::Start() {
+ThreadForIO::~ThreadForIO() {
+
+}
+
+void ThreadForIO::Start() {
   if (thread_) {
     return;
   }
   started_ = true;
-  thread_.reset(new std::thread(&ThreadIO::ThreadProc, this));
+  thread_.reset(new std::thread(&ThreadForIO::ThreadProc, this));
   std::stringstream ss;
   ss << thread_->get_id();
   SPDLOG_INFO("Thread created, thread_id {}", ss.str());
 }
 
-void ThreadIO::Stop() {
+void ThreadForIO::Stop() {
+  SPDLOG_INFO("Thread should stop started_ {} running_ {}", started_.load(), running_.load());
   do {
     started_ = false;
     if (!running_) {
@@ -27,6 +36,9 @@ void ThreadIO::Stop() {
     uv_stop(loop_);
   } while (0);
   if (thread_) {
+    std::stringstream ss;
+    ss << thread_->get_id();
+    SPDLOG_INFO("Thread should stop, thread_id {}", ss.str());
     if (thread_->joinable()) {
       thread_->join();
     }
@@ -34,8 +46,8 @@ void ThreadIO::Stop() {
   assert(running_ == false);
 }
 
-void ThreadIO::ThreadProc() {
-  if (started_) {
+void ThreadForIO::ThreadProc() {
+  if (!started_) {
     return;
   }
   running_ = true;
