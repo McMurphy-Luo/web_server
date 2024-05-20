@@ -1,6 +1,5 @@
 #include "tcp_server.h"
 
-
 TcpServer* TcpServer::CreateTcpServer(ThreadForIO* thread) {
   if (!thread) {
     return nullptr;
@@ -24,6 +23,8 @@ ThreadForIO* TcpServer::Thread() {
 
 void TcpServer::Listen(uint32_t port) {
 
+  uv_tcp_bind()
+  thread_->Loop();
 }
 
 void TcpServer::Stop() {

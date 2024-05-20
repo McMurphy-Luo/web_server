@@ -9,7 +9,7 @@
 struct uv_tcp_s;
 typedef uv_tcp_s uv_tcp_t;
 
-class TcpServer : RefCounter<ThreadUnsafeCounter> {
+class TcpServer : public RefCounter<ThreadUnsafeCounter> {
 public:
   static TcpServer* CreateTcpServer(ThreadForIO* thread);
 

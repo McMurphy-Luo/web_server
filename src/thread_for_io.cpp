@@ -12,10 +12,7 @@ ThreadForIO::ThreadForIO() {
 }
 
 ThreadForIO::~ThreadForIO() {
-  if (loop_terminator_) {
-    uv_close((uv_handle_t*)loop_terminator_, CleanHandle);
-    free(loop_terminator_);
-  }
+
 }
 
 void ThreadForIO::Start() {
@@ -56,6 +53,10 @@ void ThreadForIO::Stop() {
   assert(running_ == false);
 }
 
+uv_loop_t* ThreadForIO::Loop() {
+  return loop_;
+}
+
 void ThreadForIO::ThreadProc() {
   if (!started_) {
     return;
@@ -67,16 +68,16 @@ void ThreadForIO::ThreadProc() {
   loop_ = (uv_loop_t*)malloc(sizeof(uv_loop_t));
   uv_loop_init(loop_);
   int run_result = 0;
-  while (started_ && 0 != run_result) {
+  do {
     run_result = uv_run(loop_, UV_RUN_DEFAULT);
     if (run_result == 0) {
-      if (started_) {
-        std::unique_lock<std::mutex> lock(loop_guard_);
-        sleep_var_.wait(lock);
+      if (!started_) {
+        break;
       }
-      run_result = uv_run(loop_, UV_RUN_DEFAULT);
+      std::unique_lock<std::mutex> lock(loop_guard_);
+      sleep_var_.wait(lock);
     }
-  }
+  } while (true);
   SPDLOG_INFO("uv loop stoped run_result is {}", run_result);
   uv_loop_close(loop_);
   free(loop_);
