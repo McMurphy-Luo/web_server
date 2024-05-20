@@ -7,10 +7,15 @@
 #include <memory>
 #include <thread>
 #include <atomic>
+#include <mutex>
 #include "ref_counter.h"
 
 struct uv_loop_s;
+struct uv_async_s;
+struct uv_handle_s;
 typedef struct uv_loop_s uv_loop_t;
+typedef struct uv_async_s uv_async_t;
+typedef struct uv_handle_s uv_handle_t;
 
 class ThreadForIO : public RefCounter<ThreadSafeCounter>
 {
@@ -31,14 +36,17 @@ public:
 
 private:
   void ThreadProc();
+  static void TerminateLoop(uv_async_t* handle);
+  static void CleanHandle(uv_handle_t* handle);
 
 private:
   std::unique_ptr<std::thread> thread_;
   std::condition_variable sleep_var_;
-  std::mutex mutex_of_sleep_;
-  uv_loop_t* loop_ = nullptr;
-  std::atomic<bool> running_;
+  std::mutex loop_guard_;
   std::atomic<bool> started_;
+  uv_loop_t* loop_ = nullptr;
+  uv_async_t* loop_terminator_ = nullptr;
+  std::atomic<bool> running_;
 };
 
 #endif // WEB_SERVER_THREAD_FOR_IO_H_

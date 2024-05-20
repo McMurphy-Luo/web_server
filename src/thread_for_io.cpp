@@ -12,7 +12,10 @@ ThreadForIO::ThreadForIO() {
 }
 
 ThreadForIO::~ThreadForIO() {
-
+  if (loop_terminator_) {
+    uv_close((uv_handle_t*)loop_terminator_, CleanHandle);
+    free(loop_terminator_);
+  }
 }
 
 void ThreadForIO::Start() {
@@ -33,7 +36,14 @@ void ThreadForIO::Stop() {
     if (!running_) {
       break;
     }
-    uv_stop(loop_);
+    {
+      std::lock_guard<std::mutex> lock(loop_guard_);
+      loop_terminator_ = (uv_async_t*)malloc(sizeof(uv_async_t));
+      uv_async_init(loop_, loop_terminator_, TerminateLoop);
+      uv_handle_set_data((uv_handle_t*)loop_terminator_, this);
+      uv_async_send(loop_terminator_);
+    }
+    sleep_var_.notify_one();
   } while (0);
   if (thread_) {
     std::stringstream ss;
@@ -57,12 +67,31 @@ void ThreadForIO::ThreadProc() {
   loop_ = (uv_loop_t*)malloc(sizeof(uv_loop_t));
   uv_loop_init(loop_);
   int run_result = 0;
-  while (started_) {
+  while (started_ && 0 != run_result) {
     run_result = uv_run(loop_, UV_RUN_DEFAULT);
+    if (run_result == 0) {
+      if (started_) {
+        std::unique_lock<std::mutex> lock(loop_guard_);
+        sleep_var_.wait(lock);
+      }
+      run_result = uv_run(loop_, UV_RUN_DEFAULT);
+    }
   }
   SPDLOG_INFO("uv loop stoped run_result is {}", run_result);
   uv_loop_close(loop_);
   free(loop_);
   loop_ = nullptr;
   running_ = false;
+}
+
+void ThreadForIO::TerminateLoop(uv_async_t* handle) {
+  uv_loop_t* loop = uv_handle_get_loop((uv_handle_t*)handle);
+  uv_close((uv_handle_t*)handle, CleanHandle);
+  uv_stop(loop);
+}
+
+void ThreadForIO::CleanHandle(uv_handle_t* handle) {
+  ThreadForIO* thread = (ThreadForIO*)uv_handle_get_data(handle);
+  thread->loop_terminator_ = nullptr;
+  free(handle);
 }
