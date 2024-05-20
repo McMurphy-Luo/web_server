@@ -47,7 +47,6 @@ private:
   std::atomic<bool> started_;
   uv_loop_t* loop_ = nullptr;
   uv_async_t* loop_terminator_ = nullptr;
-  std::atomic<bool> running_;
 };
 
 #endif // WEB_SERVER_THREAD_FOR_IO_H_

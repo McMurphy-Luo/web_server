@@ -19,28 +19,31 @@ void ThreadForIO::Start() {
   if (thread_) {
     return;
   }
+  loop_ = (uv_loop_t*)malloc(sizeof(uv_loop_t));
+  uv_loop_init(loop_);
   started_ = true;
-  thread_.reset(new std::thread(&ThreadForIO::ThreadProc, this));
+  thread_.reset(new (std::nothrow) std::thread(&ThreadForIO::ThreadProc, this));
+  if (thread_) {
+    started_ = true;
+  }
   std::stringstream ss;
-  ss << thread_->get_id();
-  SPDLOG_INFO("Thread created, thread_id {}", ss.str());
+  ss << " thread_id " << thread_->get_id() << " this_thread_id " << std::this_thread::get_id();
+  SPDLOG_INFO("Thread created, {}", ss.str());
 }
 
 void ThreadForIO::Stop() {
-  SPDLOG_INFO("Thread should stop started_ {} running_ {}", started_.load(), running_.load());
+  SPDLOG_INFO("Thread should stop started_ {}", started_.load());
   do {
-    started_ = false;
-    if (!running_) {
-      break;
-    }
-    {
-      std::lock_guard<std::mutex> lock(loop_guard_);
+    std::lock_guard<std::mutex> lock(loop_guard_);
+    if (loop_) {
       loop_terminator_ = (uv_async_t*)malloc(sizeof(uv_async_t));
       uv_async_init(loop_, loop_terminator_, TerminateLoop);
       uv_handle_set_data((uv_handle_t*)loop_terminator_, this);
       uv_async_send(loop_terminator_);
+      sleep_var_.notify_one();
+    } else {
+      started_ = false;
     }
-    sleep_var_.notify_one();
   } while (0);
   if (thread_) {
     std::stringstream ss;
@@ -50,7 +53,6 @@ void ThreadForIO::Stop() {
       thread_->join();
     }
   }
-  assert(running_ == false);
 }
 
 uv_loop_t* ThreadForIO::Loop() {
@@ -58,15 +60,9 @@ uv_loop_t* ThreadForIO::Loop() {
 }
 
 void ThreadForIO::ThreadProc() {
-  if (!started_) {
-    return;
-  }
-  running_ = true;
   std::stringstream ss;
-  ss << thread_->get_id();
-  SPDLOG_INFO("Thread running, thread_id {}", ss.str());
-  loop_ = (uv_loop_t*)malloc(sizeof(uv_loop_t));
-  uv_loop_init(loop_);
+  ss << " this_thread_id " << std::this_thread::get_id();
+  SPDLOG_INFO("Thread started, thread_id {}", ss.str());
   int run_result = 0;
   do {
     run_result = uv_run(loop_, UV_RUN_DEFAULT);
@@ -78,11 +74,10 @@ void ThreadForIO::ThreadProc() {
       sleep_var_.wait(lock);
     }
   } while (true);
-  SPDLOG_INFO("uv loop stoped run_result is {}", run_result);
   uv_loop_close(loop_);
   free(loop_);
   loop_ = nullptr;
-  running_ = false;
+  SPDLOG_INFO("uv loop stoped run_result is {}", run_result);
 }
 
 void ThreadForIO::TerminateLoop(uv_async_t* handle) {
@@ -95,4 +90,5 @@ void ThreadForIO::CleanHandle(uv_handle_t* handle) {
   ThreadForIO* thread = (ThreadForIO*)uv_handle_get_data(handle);
   thread->loop_terminator_ = nullptr;
   free(handle);
+  thread->started_ = false;
 }
