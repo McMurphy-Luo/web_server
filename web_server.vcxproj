@@ -12,13 +12,16 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\web_server\web_server.h" />
-    <ClInclude Include="src\http_server.h" />
-    <ClInclude Include="src\thread_io.h" />
+    <ClInclude Include="src\http_connection.h" />
+    <ClInclude Include="src\ref_counter.h" />
+    <ClInclude Include="src\tcp_server.h" />
+    <ClInclude Include="src\thread_for_io.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\http_server.cpp" />
+    <ClCompile Include="src\http_connection.cpp" />
     <ClCompile Include="src\main.cpp" />
-    <ClCompile Include="src\thread_io.cpp" />
+    <ClCompile Include="src\tcp_server.cpp" />
+    <ClCompile Include="src\thread_for_io.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>

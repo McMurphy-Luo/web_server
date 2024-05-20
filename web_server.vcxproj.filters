@@ -15,10 +15,16 @@
     <ClInclude Include="include\web_server\web_server.h">
       <Filter>include\web_server</Filter>
     </ClInclude>
-    <ClInclude Include="src\http_server.h">
+    <ClInclude Include="src\http_connection.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\thread_io.h">
+    <ClInclude Include="src\ref_counter.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\tcp_server.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\thread_for_io.h">
       <Filter>src</Filter>
     </ClInclude>
   </ItemGroup>
@@ -26,10 +32,13 @@
     <ClCompile Include="src\main.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\http_server.cpp">
+    <ClCompile Include="src\http_connection.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="src\thread_io.cpp">
+    <ClCompile Include="src\tcp_server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\thread_for_io.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
