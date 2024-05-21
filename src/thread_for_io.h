@@ -37,16 +37,13 @@ public:
 
 private:
   void ThreadProc();
-  static void TerminateLoop(uv_async_t* handle);
-  static void CleanHandle(uv_handle_t* handle);
 
 private:
   std::unique_ptr<std::thread> thread_;
   std::condition_variable sleep_var_;
   std::mutex loop_guard_;
-  std::atomic<bool> started_;
+  std::atomic<bool> should_terminate_;
   uv_loop_t* loop_ = nullptr;
-  uv_async_t* loop_terminator_ = nullptr;
 };
 
 #endif // WEB_SERVER_THREAD_FOR_IO_H_

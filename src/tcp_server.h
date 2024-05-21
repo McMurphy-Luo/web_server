@@ -8,6 +8,8 @@
 
 struct uv_tcp_s;
 typedef uv_tcp_s uv_tcp_t;
+struct uv_stream_s;
+typedef uv_stream_s uv_stream_t;
 
 class TcpServer : public RefCounter<ThreadUnsafeCounter> {
 public:
@@ -25,6 +27,9 @@ public:
   ThreadForIO* Thread();
   void Listen(uint32_t port);
   void Stop();
+
+private:
+  static void OnConnection(uv_stream_t* server, int status);
 
 private:
   RefCounterPtr<ThreadForIO> thread_;
