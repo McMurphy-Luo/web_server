@@ -4,6 +4,7 @@
 #include "thread_for_io.h"
 #include "uv.h"
 #include "spdlog/spdlog.h"
+#include "tcp_server.h"
 
 int main(int argc, char* argv[])
 {
@@ -11,6 +12,8 @@ int main(int argc, char* argv[])
   spdlog::set_pattern("[%Y:%T:%e %z] %^[%l] [thread:%t] [%s:%#] [%!]%$ %v");
   RefCounterPtr<ThreadForIO> thread(ThreadForIO::CreateThread());
   thread->Start();
+  RefCounterPtr<TcpServer> server(TcpServer::CreateTcpServer(thread.Get()));
+  server->Listen(8080);
   std::string current_line;
   current_line.reserve(64);
   do {
