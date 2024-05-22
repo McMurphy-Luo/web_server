@@ -63,6 +63,11 @@ uv_loop_t* ThreadForIO::Handle() {
   return loop_;
 }
 
+void ThreadForIO::Wake() {
+  std::lock_guard<std::mutex> lock(loop_guard_);
+  sleep_var_.notify_one();
+}
+
 void ThreadForIO::ThreadProc() {
   std::stringstream ss;
   ss << std::this_thread::get_id();

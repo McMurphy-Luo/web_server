@@ -39,10 +39,12 @@ void TcpServer::Listen(uint32_t port) {
   uv_ip4_addr("0.0.0.0", port, &address);
   int result = uv_tcp_bind(tcp_, (sockaddr*)(&address), 0);
   result = uv_listen((uv_stream_t*)tcp_, SOMAXCONN, TcpServer::OnConnection);
+  thread_->Wake();
 }
 
 void TcpServer::Stop() {
-  uv_tcp_close_reset(tcp_, OnTcpClose);
+  uv_close((uv_handle_t*)tcp_, OnTcpClose);
+  thread_->Wake();
 }
 
 void TcpServer::OnConnection(uv_stream_t* server, int status) {

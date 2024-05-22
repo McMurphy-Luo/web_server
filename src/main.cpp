@@ -6,31 +6,7 @@
 #include "spdlog/spdlog.h"
 #include "tcp_server.h"
 #include "tcp_connection.h"
-
-class TcpServerSinkImpl
-  : public TcpServerSink
-  , public RefCounter<ThreadUnsafeCounter>
-{
-public:
-  explicit TcpServerSinkImpl(TcpServer* server)
-    : server_(server)
-  {
-
-  }
-
-  virtual ~TcpServerSinkImpl() override {
-    server_->SetSink(nullptr);
-  }
-
-public:
-  virtual void OnConnection(TcpServer* server, int status) override {
-    RefCounterPtr<TcpConnection> conn = TcpConnection::AcceptTcpConnection(server);
-    conn->ReadStart();
-  }
-
-private:
-  RefCounterPtr<TcpServer> server_;
-};
+#include "http_server.h"
 
 int main(int argc, char* argv[])
 {
@@ -38,10 +14,13 @@ int main(int argc, char* argv[])
   spdlog::set_pattern("[%Y:%T:%e %z] %^[%l] [thread:%t] [%s:%#] [%!]%$ %v");
   RefCounterPtr<ThreadForIO> thread(ThreadForIO::CreateThread());
   thread->Start();
-  RefCounterPtr<TcpServer> server(TcpServer::CreateTcpServer(thread.Get()));
-  server->Listen(8080);
-  RefCounterPtr<TcpServerSinkImpl> sink(new TcpServerSinkImpl(server.Get()));
-  server->SetSink(sink.Get());
+  RefCounterPtr<HttpServer> http_server;
+  {
+    TcpServer* tcp_server(TcpServer::CreateTcpServer(thread.Get()));
+    tcp_server->Listen(8080);
+    http_server = new (std::nothrow) HttpServer(tcp_server);
+    tcp_server->SetSink(http_server.Get());
+  }
   std::string current_line;
   current_line.reserve(64);
   do {
@@ -67,6 +46,7 @@ int main(int argc, char* argv[])
       }
     }
   } while (true);
+  http_server->Stop();
   thread->Stop();
   SPDLOG_INFO("program end.");
   return 0;

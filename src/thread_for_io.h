@@ -34,6 +34,7 @@ public:
   void Start();
   void Stop();
   uv_loop_t* Handle();
+  void Wake();
 
 private:
   void ThreadProc();
