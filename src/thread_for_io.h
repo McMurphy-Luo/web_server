@@ -33,7 +33,7 @@ protected:
 public:
   void Start();
   void Stop();
-  uv_loop_t* Loop();
+  uv_loop_t* Handle();
 
 private:
   void ThreadProc();

@@ -43,13 +43,11 @@ void ThreadForIO::Stop() {
     ss << thread_->get_id();
   }
   SPDLOG_INFO("Thread should stop, has_thread {}, thread_id {}", !!thread_, ss.str());
-  do {
-    if (loop_) {
-      std::lock_guard<std::mutex> lock(loop_guard_);
-      should_terminate_ = true;
-      sleep_var_.notify_one();
-    }
-  } while (0);
+  if (loop_) {
+    std::lock_guard<std::mutex> lock(loop_guard_);
+    should_terminate_ = true;
+    sleep_var_.notify_one();
+  }
   if (thread_) {
     std::stringstream ss;
     ss << thread_->get_id();
@@ -61,7 +59,7 @@ void ThreadForIO::Stop() {
   }
 }
 
-uv_loop_t* ThreadForIO::Loop() {
+uv_loop_t* ThreadForIO::Handle() {
   return loop_;
 }
 

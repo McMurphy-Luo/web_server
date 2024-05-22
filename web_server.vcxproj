@@ -12,13 +12,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\web_server\web_server.h" />
-    <ClInclude Include="src\http_connection.h" />
+    <ClInclude Include="src\tcp_connection.h" />
     <ClInclude Include="src\ref_counter.h" />
     <ClInclude Include="src\tcp_server.h" />
     <ClInclude Include="src\thread_for_io.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\http_connection.cpp" />
+    <ClCompile Include="src\tcp_connection.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\tcp_server.cpp" />
     <ClCompile Include="src\thread_for_io.cpp" />
@@ -71,7 +71,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./include;D:\libuv\include;D:\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
@@ -88,7 +88,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>./include;D:\libuv\include;D:\spdlog\include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>./include;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
