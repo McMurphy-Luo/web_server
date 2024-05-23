@@ -5,11 +5,7 @@
 
 #include "web_server/web_server.h"
 #include "thread_for_io.h"
-
-struct uv_tcp_s;
-typedef uv_tcp_s uv_tcp_t;
-struct uv_stream_s;
-typedef uv_stream_s uv_stream_t;
+#include "uv.h"
 
 class TcpServer;
 

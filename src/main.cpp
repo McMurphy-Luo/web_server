@@ -7,13 +7,42 @@
 #include "tcp_server.h"
 #include "tcp_connection.h"
 #include "http_server.h"
+#include "async_task.h"
+
+class CloseServer
+  : public AsyncTaskSink
+  , public RefCounter<ThreadUnsafeCounter>
+{
+public:
+  explicit CloseServer(AsyncTask* task, HttpServer* server)
+    : task_(task)
+    , http_server_(server)
+  {
+
+  }
+
+protected:
+  CloseServer(const CloseServer&) = delete;
+  CloseServer(CloseServer&&) = delete;
+  CloseServer& operator=(const CloseServer&) = delete;
+  CloseServer& operator=(CloseServer&&) = delete;
+  virtual ~CloseServer() override = default;
+
+public:
+  virtual void Execute() override {
+    http_server_->Stop();
+  }
+
+private:
+  RefCounterPtr<AsyncTask> task_;
+  RefCounterPtr<HttpServer> http_server_;
+};
 
 int main(int argc, char* argv[])
 {
   _CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
   spdlog::set_pattern("[%Y:%T:%e %z] %^[%l] [thread:%t] [%s:%#] [%!]%$ %v");
   RefCounterPtr<ThreadForIO> thread(ThreadForIO::CreateThread());
-  thread->Start();
   RefCounterPtr<HttpServer> http_server;
   {
     TcpServer* tcp_server(TcpServer::CreateTcpServer(thread.Get()));
@@ -21,6 +50,7 @@ int main(int argc, char* argv[])
     http_server = new (std::nothrow) HttpServer(tcp_server);
     tcp_server->SetSink(http_server.Get());
   }
+  thread->Start();
   std::string current_line;
   current_line.reserve(64);
   do {
@@ -46,7 +76,10 @@ int main(int argc, char* argv[])
       }
     }
   } while (true);
-  http_server->Stop();
+  RefCounterPtr<AsyncTask> task = AsyncTask::CreateAsyncTask(thread.Get());
+  RefCounterPtr<CloseServer> closer = new CloseServer(task.Get(), http_server.Get());
+  task->SetSink(closer.Get());
+  task->Submit();
   thread->Stop();
   SPDLOG_INFO("program end.");
   return 0;

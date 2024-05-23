@@ -9,15 +9,12 @@
 #include <atomic>
 #include <mutex>
 #include "ref_counter.h"
+#include "uv.h"
 
-struct uv_loop_s;
-struct uv_async_s;
-struct uv_handle_s;
-typedef struct uv_loop_s uv_loop_t;
-typedef struct uv_async_s uv_async_t;
-typedef struct uv_handle_s uv_handle_t;
+class AsyncTask;
 
-class ThreadForIO : public RefCounter<ThreadSafeCounter>
+class ThreadForIO
+  : public RefCounter<ThreadSafeCounter>
 {
 public:
   static ThreadForIO* CreateThread();

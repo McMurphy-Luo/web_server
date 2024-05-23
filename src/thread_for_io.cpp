@@ -8,30 +8,24 @@ ThreadForIO* ThreadForIO::CreateThread() {
 }
 
 ThreadForIO::ThreadForIO() {
-
-}
-
-ThreadForIO::~ThreadForIO() {
-
-}
-
-void ThreadForIO::Start() {
-  if (thread_) {
-    return;
-  }
   if (!loop_) {
     loop_ = (uv_loop_t*)malloc(sizeof(uv_loop_t));
   }
   if (loop_) {
     uv_loop_init(loop_);
   }
-  thread_.reset(new (std::nothrow) std::thread(&ThreadForIO::ThreadProc, this));
-  if (!thread_) {
-    if (loop_) {
-      uv_loop_close(loop_);
-      free(loop_);
-    }
+}
+
+ThreadForIO::~ThreadForIO() {
+  free(loop_);
+  loop_ = nullptr;
+}
+
+void ThreadForIO::Start() {
+  if (thread_) {
+    return;
   }
+  thread_.reset(new (std::nothrow) std::thread(&ThreadForIO::ThreadProc, this));
   std::stringstream ss;
   ss << "thread_id " << thread_->get_id() << " this_thread_id " << std::this_thread::get_id();
   SPDLOG_INFO("Thread created, {}", ss.str());
@@ -84,7 +78,6 @@ void ThreadForIO::ThreadProc() {
     }
   } while (true);
   int close_result = uv_loop_close(loop_);
+  SPDLOG_INFO("close_result {}", close_result);
   assert(UV_EBUSY != close_result);
-  free(loop_);
-  loop_ = nullptr;
 }

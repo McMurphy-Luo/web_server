@@ -44,9 +44,7 @@ void TcpConnection::ReadStop() {
 }
 
 void TcpConnection::Close() {
-  uv_shutdown_t* shutdown = (uv_shutdown_t*)malloc(sizeof(uv_shutdown_t));
-  uv_read_stop((uv_stream_t*)handle_);
-  uv_shutdown(shutdown, (uv_stream_t*)handle_, NULL);
+  uv_close((uv_handle_t*)handle_, OnConnectionClose);
 }
 
 void TcpConnection::ResetClose() {

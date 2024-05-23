@@ -5,19 +5,7 @@
 
 #include "web_server/web_server.h"
 #include "ref_counter.h"
-
-struct uv_tcp_s;
-typedef uv_tcp_s uv_tcp_t;
-struct uv_stream_s;
-typedef uv_stream_s uv_stream_t;
-struct uv_buf_t;
-struct uv_handle_s;
-typedef uv_handle_s uv_handle_t;
-struct uv_write_s;
-typedef uv_write_s uv_write_t;
-struct uv_shutdown_s;
-typedef uv_shutdown_s uv_shutdown_t;
-typedef intptr_t ssize_t;
+#include "uv.h"
 
 class TcpServer;
 
