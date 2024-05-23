@@ -27,6 +27,15 @@
     <ClInclude Include="src\thread_for_io.h">
       <Filter>src</Filter>
     </ClInclude>
+    <ClInclude Include="src\http_connection.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\http_server.h">
+      <Filter>src</Filter>
+    </ClInclude>
+    <ClInclude Include="src\async_task.h">
+      <Filter>src</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\main.cpp">
@@ -39,6 +48,15 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="src\thread_for_io.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http_connection.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\http_server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="src\async_task.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
