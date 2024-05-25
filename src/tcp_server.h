@@ -7,6 +7,8 @@
 #include "thread_for_io.h"
 #include "uv.h"
 
+NAMESPACE_BEGIN
+
 class TcpServer;
 
 class TcpServer final
@@ -46,5 +48,7 @@ private:
   uv_tcp_t* tcp_ = nullptr;
   Delegate* delegate_ = nullptr;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_TCP_SERVER_H_

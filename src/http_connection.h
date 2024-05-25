@@ -6,6 +6,8 @@
 #include "web_server/web_server.h"
 #include "tcp_connection.h"
 
+NAMESPACE_BEGIN
+
 class HttpConnection final
   : public TcpConnection::Delegate
   , public RefCounter<ThreadUnsafeCounter>
@@ -31,5 +33,7 @@ private:
 private:
   RefCounterPtr<TcpConnection> conn_;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_HTTP_CONNECTION_H_

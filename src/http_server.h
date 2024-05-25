@@ -8,6 +8,8 @@
 #include "ref_counter.h"
 #include "tcp_server.h"
 
+NAMESPACE_BEGIN
+
 class HttpConnection;
 
 class HttpServer final
@@ -34,5 +36,7 @@ private:
   RefCounterPtr<TcpServer> server_;
   std::vector<RefCounterPtr<HttpConnection>> connections_;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_HTTP_SERVER_H_

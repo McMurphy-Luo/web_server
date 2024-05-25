@@ -2,6 +2,9 @@
 #include "uv.h"
 #include "spdlog/spdlog.h"
 
+using NAMESPACE::TcpServer;
+using NAMESPACE::ThreadForIO;
+
 TcpServer* TcpServer::CreateTcpServer(ThreadForIO* thread) {
   if (!thread) {
     return nullptr;

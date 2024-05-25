@@ -1,6 +1,9 @@
 #include "stream_writer.h"
 #include "tcp_connection.h"
 
+using NAMESPACE::StreamWriter;
+using NAMESPACE::TcpConnection;
+
 StreamWriter::StreamWriter() {
 
 }

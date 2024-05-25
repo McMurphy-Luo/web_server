@@ -2,6 +2,9 @@
 #include "spdlog/spdlog.h"
 #include "stream_writer.h"
 
+using NAMESPACE::StreamWriter;
+using NAMESPACE::HttpConnection;
+
 constexpr char kResponseOK[] =
 R"(HTTP/1.1 200 OK
 Content-Type: text/plain

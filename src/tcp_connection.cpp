@@ -4,6 +4,8 @@
 #include "spdlog/spdlog.h"
 #include "stream_writer.h"
 
+using NAMESPACE::TcpConnection;
+
 static void AllocateBuffer(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf) {
   buf->base = (char*)malloc(suggested_size);
   buf->len = static_cast<ULONG>(suggested_size);

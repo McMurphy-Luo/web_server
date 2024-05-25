@@ -8,6 +8,8 @@
 #include "ref_counter.h"
 #include <vector>
 
+NAMESPACE_BEGIN
+
 class TcpConnection;
 
 class StreamWriter final
@@ -40,5 +42,7 @@ private:
   uv_write_t* handle_ = nullptr;
   RefCounterPtr<TcpConnection> connection_;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_STREAM_WRITTER_H_

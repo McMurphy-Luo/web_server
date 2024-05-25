@@ -11,6 +11,8 @@
 #include "ref_counter.h"
 #include "uv.h"
 
+NAMESPACE_BEGIN
+
 class AsyncTask;
 
 class ThreadForIO final
@@ -43,5 +45,7 @@ private:
   std::atomic<bool> should_terminate_;
   uv_loop_t* loop_ = nullptr;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_THREAD_FOR_IO_H_

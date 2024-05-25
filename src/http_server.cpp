@@ -5,6 +5,10 @@
 #include "spdlog/spdlog.h"
 #include "uv.h"
 
+using NAMESPACE::RefCounterPtr;
+using NAMESPACE::HttpServer;
+using NAMESPACE::HttpConnection;
+
 static void CloseConnection(RefCounterPtr<HttpConnection> conn) {
   conn->Close();
 }

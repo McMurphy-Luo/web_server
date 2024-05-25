@@ -7,6 +7,8 @@
 #include "ref_counter.h"
 #include "uv.h"
 
+NAMESPACE_BEGIN
+
 class ThreadForIO;
 
 class AsyncTask final
@@ -44,5 +46,7 @@ private:
   uv_async_t* handle_ = nullptr;
   RefCounterPtr<ThreadForIO> thread_;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_ASYNC_TASK_H_

@@ -3,6 +3,8 @@
 #include "uv.h"
 #include "spdlog/spdlog.h"
 
+using NAMESPACE::ThreadForIO;
+
 ThreadForIO* ThreadForIO::CreateThread() {
   return new ThreadForIO();
 }

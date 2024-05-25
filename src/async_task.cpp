@@ -3,6 +3,8 @@
 #include "uv.h"
 #include "spdlog/spdlog.h"
 
+using NAMESPACE::AsyncTask;
+
 AsyncTask* AsyncTask::CreateAsyncTask(ThreadForIO* thread) {
   return new (std::nothrow) AsyncTask(thread);
 }

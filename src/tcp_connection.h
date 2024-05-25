@@ -7,6 +7,8 @@
 #include "ref_counter.h"
 #include "uv.h"
 
+NAMESPACE_BEGIN
+
 class TcpServer;
 class StreamWriter;
 
@@ -50,5 +52,7 @@ private:
   Delegate* delegate_ = nullptr;
   uv_tcp_t* handle_ = nullptr;
 };
+
+NAMESPACE_END
 
 #endif // WEB_SERVER_TCP_CONNECTION_H_

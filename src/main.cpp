@@ -9,6 +9,14 @@
 #include "http_server.h"
 #include "async_task.h"
 
+using NAMESPACE::AsyncTask;
+using NAMESPACE::RefCounter;
+using NAMESPACE::ThreadUnsafeCounter;
+using NAMESPACE::HttpServer;
+using NAMESPACE::RefCounterPtr;
+using NAMESPACE::ThreadForIO;
+using NAMESPACE::TcpServer;
+
 class CloseServer
   : public AsyncTask::Delegate
   , public RefCounter<ThreadUnsafeCounter>

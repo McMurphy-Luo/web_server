@@ -1,11 +1,15 @@
 #ifndef REF_COUNTER_H_
 #define REF_COUNTER_H_
 
+
+#include "web_server/web_server.h"
 #include <atomic>
 #include <ostream>
 #include <type_traits>
 #include <functional>
 #include <cassert>
+
+NAMESPACE_BEGIN
 
 struct ThreadUnsafeCounter
 {
@@ -338,20 +342,26 @@ template<class E, class T, class Y> std::basic_ostream<E, T>& operator<< (std::b
   return os;
 }
 
+NAMESPACE_END
+
 namespace std
 {
-  template<class T> struct hash< RefCounterPtr<T> >
+  template<class T> struct hash<NAMESPACE::RefCounterPtr<T> >
   {
-    std::size_t operator()(RefCounterPtr<T> const& p) const noexcept
+    std::size_t operator()(NAMESPACE::RefCounterPtr<T> const& p) const noexcept
     {
       return std::hash< T* >()(p.Get());
     }
   };
 } // namespace std
 
+NAMESPACE_BEGIN
+
 template< class T > std::size_t hash_value(RefCounterPtr<T> const& p) noexcept
 {
   return std::hash< T* >()(p.Get());
 }
+
+NAMESPACE_END
 
 #endif // REF_COUNTER_H_
