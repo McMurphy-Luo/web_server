@@ -13,7 +13,7 @@
 
 class AsyncTask;
 
-class ThreadForIO
+class ThreadForIO final
   : public RefCounter<ThreadSafeCounter>
 {
 public:

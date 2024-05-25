@@ -19,8 +19,8 @@ TcpServer::~TcpServer() {
 
 }
 
-void TcpServer::SetSink(TcpServerSink* sink) {
-  sink_ = sink;
+void TcpServer::SetDelegate(Delegate* sink) {
+  delegate_ = sink;
 }
 
 ThreadForIO* TcpServer::Thread() {
@@ -50,8 +50,8 @@ void TcpServer::Stop() {
 void TcpServer::OnConnection(uv_stream_t* server, int status) {
   SPDLOG_INFO("status {}", status);
   TcpServer* the_server = (TcpServer*)uv_handle_get_data((uv_handle_t*)server);
-  if (the_server->sink_) {
-    the_server->sink_->OnConnection(the_server, status);
+  if (the_server->delegate_) {
+    the_server->delegate_->OnConnection(the_server, status);
   }
 }
 

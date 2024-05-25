@@ -10,8 +10,8 @@
 
 class HttpConnection;
 
-class HttpServer
-  : public TcpServerSink
+class HttpServer final
+  : public TcpServer::Delegate
   , public RefCounter<ThreadUnsafeCounter>
 {
 public:

@@ -10,7 +10,7 @@
 #include "async_task.h"
 
 class CloseServer
-  : public AsyncTaskSink
+  : public AsyncTask::Delegate
   , public RefCounter<ThreadUnsafeCounter>
 {
 public:
@@ -48,7 +48,7 @@ int main(int argc, char* argv[])
     TcpServer* tcp_server(TcpServer::CreateTcpServer(thread.Get()));
     tcp_server->Listen(8080);
     http_server = new (std::nothrow) HttpServer(tcp_server);
-    tcp_server->SetSink(http_server.Get());
+    tcp_server->SetDelegate(http_server.Get());
   }
   thread->Start();
   std::string current_line;
@@ -78,7 +78,7 @@ int main(int argc, char* argv[])
   } while (true);
   RefCounterPtr<AsyncTask> task = AsyncTask::CreateAsyncTask(thread.Get());
   RefCounterPtr<CloseServer> closer = new CloseServer(task.Get(), http_server.Get());
-  task->SetSink(closer.Get());
+  task->SetDelegate(closer.Get());
   task->Submit();
   thread->Stop();
   SPDLOG_INFO("program end.");

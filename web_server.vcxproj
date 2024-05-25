@@ -14,7 +14,9 @@
     <ClInclude Include="include\web_server\web_server.h" />
     <ClInclude Include="src\async_task.h" />
     <ClInclude Include="src\http_connection.h" />
+    <ClInclude Include="src\http_response.h" />
     <ClInclude Include="src\http_server.h" />
+    <ClInclude Include="src\stream_writer.h" />
     <ClInclude Include="src\tcp_connection.h" />
     <ClInclude Include="src\ref_counter.h" />
     <ClInclude Include="src\tcp_server.h" />
@@ -23,7 +25,9 @@
   <ItemGroup>
     <ClCompile Include="src\async_task.cpp" />
     <ClCompile Include="src\http_connection.cpp" />
+    <ClCompile Include="src\http_response.cpp" />
     <ClCompile Include="src\http_server.cpp" />
+    <ClCompile Include="src\stream_writer.cpp" />
     <ClCompile Include="src\tcp_connection.cpp" />
     <ClCompile Include="src\main.cpp" />
     <ClCompile Include="src\tcp_server.cpp" />

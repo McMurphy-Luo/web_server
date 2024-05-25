@@ -2,6 +2,7 @@
 #include "tcp_server.h"
 #include "uv.h"
 #include "spdlog/spdlog.h"
+#include "stream_writer.h"
 
 static void AllocateBuffer(uv_handle_t* handle, size_t suggested_size, uv_buf_t* buf) {
   buf->base = (char*)malloc(suggested_size);
@@ -31,32 +32,49 @@ TcpConnection::TcpConnection()
 
 }
 
-void TcpConnection::SetSink(TcpConnectionSink* sink) {
-  sink_ = sink;
+void TcpConnection::SetDelegate(Delegate* sink) {
+  delegate_ = sink;
 }
 
 void TcpConnection::ReadStart() {
-  uv_read_start((uv_stream_t*)handle_, AllocateBuffer, OnRead);
+  if (handle_) {
+    uv_read_start((uv_stream_t*)handle_, AllocateBuffer, OnRead);
+  }
 }
 
 void TcpConnection::ReadStop() {
-  uv_read_stop((uv_stream_t*)handle_);
+  if (handle_) {
+    uv_read_stop((uv_stream_t*)handle_);
+  }
 }
 
 void TcpConnection::Close() {
-  uv_close((uv_handle_t*)handle_, OnConnectionClose);
+  if (handle_) {
+    uv_close((uv_handle_t*)handle_, OnConnectionClose);
+  }
 }
 
 void TcpConnection::ResetClose() {
-  uv_tcp_close_reset(handle_, OnConnectionClose);
+  if (handle_) {
+    uv_tcp_close_reset(handle_, OnConnectionClose);
+  }
+}
+
+void TcpConnection::Write(StreamWriter* writer) {
+  uv_write_t* handle = (uv_write_t*)malloc(sizeof(uv_write_t));
+  writer->Increment();
+  writer->SetHandle(handle);
+  writer->SetConnection(this);
+  uv_req_set_data((uv_req_t*)handle, writer);
+  uv_write(handle, (uv_stream_t*)handle_, writer->Buffer(), writer->BufferCount(), OnWrite);
 }
 
 void TcpConnection::OnRead(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf) {
   SPDLOG_INFO("nread {}", nread);
   if (nread > 0) {
     TcpConnection* conn = (TcpConnection*)uv_handle_get_data((uv_handle_t*)stream);
-    if (conn->sink_) {
-      conn->sink_->OnRead(nread, buf->base);
+    if (conn->delegate_) {
+      conn->delegate_->OnRead(nread, buf->base);
     }
   } else {
     char buf[256];
@@ -71,7 +89,13 @@ void TcpConnection::OnRead(uv_stream_t* stream, ssize_t nread, const uv_buf_t* b
 }
 
 void TcpConnection::OnWrite(uv_write_t* req, int status) {
-
+  StreamWriter* writer = (StreamWriter*)uv_req_get_data((uv_req_t*)req);
+  TcpConnection* conn = writer->Connection();
+  if (conn->delegate_) {
+    conn->delegate_->OnWrite(writer);
+  }
+  writer->SetConnection(nullptr);
+  writer->Decrement();
 }
 
 void TcpConnection::OnConnectionClose(uv_handle_t* handle) {

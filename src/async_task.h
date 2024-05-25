@@ -1,21 +1,24 @@
 #ifndef WEB_SERVER_ASYNC_TASK_H_
 #define WEB_SERVER_ASYNC_TASK_H_
 
+#pragma once
+
 #include "web_server/web_server.h"
 #include "ref_counter.h"
 #include "uv.h"
 
 class ThreadForIO;
 
-class AsyncTaskSink {
-public:
-  virtual ~AsyncTaskSink() = default;
-  virtual void Execute() = 0;
-};
-
-class AsyncTask 
+class AsyncTask final
   : public RefCounter<ThreadUnsafeCounter>
 {
+public:
+  class Delegate {
+  public:
+    virtual ~Delegate() = default;
+    virtual void Execute() = 0;
+  };
+
 public:
   static AsyncTask* CreateAsyncTask(ThreadForIO* thread);
 
@@ -28,7 +31,7 @@ protected:
   virtual ~AsyncTask() override;
 
 public:
-  void SetSink(AsyncTaskSink* p_sink);
+  void SetDelegate(Delegate* p_sink);
   void Submit();
 
 private:
@@ -37,7 +40,7 @@ private:
   static void OnHandleClose(uv_handle_t* handle);
 
 private:
-  AsyncTaskSink* sink_ = nullptr;
+  Delegate* delegate_ = nullptr;
   uv_async_t* handle_ = nullptr;
   RefCounterPtr<ThreadForIO> thread_;
 };

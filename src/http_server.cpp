@@ -16,7 +16,7 @@ HttpServer::HttpServer(TcpServer* server)
 }
 
 HttpServer::~HttpServer() {
-  server_->SetSink(nullptr);
+  server_->SetDelegate(nullptr);
 }
 
 void HttpServer::Stop() {
@@ -35,7 +35,7 @@ void HttpServer::OnConnection(TcpServer* server, int status) {
   }
   TcpConnection* conn = TcpConnection::AcceptTcpConnection(server);
   HttpConnection* http_conn = new (std::nothrow) HttpConnection(conn);
-  conn->SetSink(http_conn);
+  conn->SetDelegate(http_conn);
   conn->ReadStart();
   connections_.push_back(http_conn);
 }

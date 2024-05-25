@@ -8,16 +8,19 @@
 #include "uv.h"
 
 class TcpServer;
-
-class TcpConnectionSink {
-public:
-  virtual ~TcpConnectionSink() = default;
-  virtual void OnRead(ssize_t nread, char* buffer) = 0;
-};
+class StreamWriter;
 
 class TcpConnection
   : public RefCounter<ThreadUnsafeCounter>
 {
+public:
+  class Delegate {
+  public:
+    virtual ~Delegate() = default;
+    virtual void OnRead(ssize_t nread, char* buffer) = 0;
+    virtual void OnWrite(StreamWriter* writter) = 0;
+  };
+
 public:
   static TcpConnection* AcceptTcpConnection(TcpServer* server);
 
@@ -29,11 +32,12 @@ protected:
   TcpConnection& operator=(TcpConnection&&) = delete;
 
 public:
-  void SetSink(TcpConnectionSink* sink);
+  void SetDelegate(Delegate* sink);
   void ReadStart();
   void ReadStop();
   void Close();
   void ResetClose();
+  void Write(StreamWriter* writter);
 
 private:
   static void OnRead(uv_stream_t* stream, ssize_t nread, const uv_buf_t* buf);
@@ -43,7 +47,7 @@ private:
   void SetHandle(uv_tcp_t* handle);
 
 private:
-  TcpConnectionSink* sink_ = nullptr;
+  Delegate* delegate_ = nullptr;
   uv_tcp_t* handle_ = nullptr;
 };
 

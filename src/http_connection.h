@@ -6,8 +6,8 @@
 #include "web_server/web_server.h"
 #include "tcp_connection.h"
 
-class HttpConnection
-  : public TcpConnectionSink
+class HttpConnection final
+  : public TcpConnection::Delegate
   , public RefCounter<ThreadUnsafeCounter>
 {
 public:
@@ -18,6 +18,7 @@ protected:
   HttpConnection(HttpConnection&&) = delete;
   HttpConnection& operator=(const HttpConnection&) = delete;
   HttpConnection& operator=(HttpConnection&&) = delete;
+  virtual ~HttpConnection() override;
 
 public:
   void Close();
@@ -25,6 +26,7 @@ public:
 
 private:
   virtual void OnRead(ssize_t nread, char* buffer) override;
+  virtual void OnWrite(StreamWriter* writter) override;
 
 private:
   RefCounterPtr<TcpConnection> conn_;

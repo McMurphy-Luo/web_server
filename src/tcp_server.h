@@ -9,15 +9,16 @@
 
 class TcpServer;
 
-class TcpServerSink {
-public:
-  virtual ~TcpServerSink() = default;
-  virtual void OnConnection(TcpServer* server, int status) = 0;
-};
-
-class TcpServer
+class TcpServer final
   : public RefCounter<ThreadUnsafeCounter>
 {
+public:
+  class Delegate {
+  public:
+    virtual ~Delegate() = default;
+    virtual void OnConnection(TcpServer* server, int status) = 0;
+  };
+
 public:
   static TcpServer* CreateTcpServer(ThreadForIO* thread);
 
@@ -30,7 +31,7 @@ protected:
   virtual ~TcpServer() override;
 
 public:
-  void SetSink(TcpServerSink* sink);
+  void SetDelegate(Delegate* sink);
   ThreadForIO* Thread();
   uv_tcp_t* Handle();
   void Listen(uint32_t port);
@@ -43,7 +44,7 @@ private:
 private:
   RefCounterPtr<ThreadForIO> thread_;
   uv_tcp_t* tcp_ = nullptr;
-  TcpServerSink* sink_ = nullptr;
+  Delegate* delegate_ = nullptr;
 };
 
 #endif // WEB_SERVER_TCP_SERVER_H_

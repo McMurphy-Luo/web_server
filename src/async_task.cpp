@@ -17,8 +17,8 @@ AsyncTask::~AsyncTask() {
 
 }
 
-void AsyncTask::SetSink(AsyncTaskSink* p_sink) {
-  sink_ = p_sink;
+void AsyncTask::SetDelegate(Delegate* p_sink) {
+  delegate_ = p_sink;
 }
 
 void AsyncTask::Submit() {
@@ -37,8 +37,8 @@ void AsyncTask::SetHandle(uv_async_t* handle) {
 
 void AsyncTask::OnAsyncExecute(uv_async_t* handle) {
   AsyncTask* p_this = (AsyncTask*)uv_handle_get_data((uv_handle_t*)handle);
-  if (p_this->sink_) {
-    p_this->sink_->Execute();
+  if (p_this->delegate_) {
+    p_this->delegate_->Execute();
   }
   uv_close((uv_handle_t*)handle, OnHandleClose);
 }
