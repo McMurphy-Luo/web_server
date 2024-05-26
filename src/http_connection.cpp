@@ -5,7 +5,7 @@
 using NAMESPACE::StreamWriter;
 using NAMESPACE::HttpConnection;
 
-constexpr char kResponseOK[] =
+static constexpr char kResponseOK[] =
 R"(HTTP/1.1 200 OK
 Content-Type: text/plain
 Connection: close
@@ -35,8 +35,8 @@ void HttpConnection::OnRead(ssize_t nread, char* buffer) {
   SPDLOG_INFO("readed {}", readed);
   StreamWriter* writer = new StreamWriter();
   SPDLOG_INFO("write {}", kResponseOK);
-  assert(kResponseOK[ARRAYSIZE(kResponseOK) - 1] == 0);
-  writer->AddBuffer((char*)kResponseOK, ARRAYSIZE(kResponseOK) - 1);
+  assert(kResponseOK[std::size(kResponseOK) - 1] == 0);
+  writer->AddBuffer((char*)kResponseOK, std::size(kResponseOK) - 1);
   conn_->Write(writer);
 }
 

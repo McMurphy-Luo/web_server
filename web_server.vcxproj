@@ -11,9 +11,11 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\web_server\u8string.h" />
     <ClInclude Include="include\web_server\web_server.h" />
     <ClInclude Include="src\async_task.h" />
     <ClInclude Include="src\http_connection.h" />
+    <ClInclude Include="src\http_request.h" />
     <ClInclude Include="src\http_response.h" />
     <ClInclude Include="src\http_server.h" />
     <ClInclude Include="src\stream_writer.h" />
@@ -25,6 +27,7 @@
   <ItemGroup>
     <ClCompile Include="src\async_task.cpp" />
     <ClCompile Include="src\http_connection.cpp" />
+    <ClCompile Include="src\http_request.cpp" />
     <ClCompile Include="src\http_response.cpp" />
     <ClCompile Include="src\http_server.cpp" />
     <ClCompile Include="src\stream_writer.cpp" />
